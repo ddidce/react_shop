@@ -41,7 +41,12 @@ function App() {
 
     <div className="container">
       <div className="row">
-
+        {
+          shoes.map((undified, i) => {
+            return <Card shoes={shoes[i]} shoesNum={i}/>
+          })
+        }
+        {/* <Card shoes={shoes}/> */}
       </div>
     </div>
 
@@ -51,12 +56,12 @@ function App() {
   );
 }
 
-const Card = () => {
+const Card = (props) => {
   return (
     <div className="col-md-4">
-      <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
-      <h4>제목</h4>
-      <p>설명 & 가격</p>
+      <img src={`https://codingapple1.github.io/shop/shoes${props.shoesNum+1}.jpg`} width="100%" />
+      <h4>{props.shoes.title}</h4>
+      <p>{props.shoes.content} & {props.shoes.price}</p>
     </div>
   )
 }
