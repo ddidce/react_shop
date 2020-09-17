@@ -1,0 +1,41 @@
+@import './reset.scss';
+
+
+$mainColor : #ff0000;
+
+
+.red {
+    color: $mainColor;
+}
+
+.my-alert {
+    background-color: #eeeeee;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+}
+
+.my-alert2 {
+    //my-alert의 scss의 정보를 여기다가 복사해서 붙여넣음
+    @extend .my-alert;
+    background-color: #ffe591;
+}
+
+.my-alert p {
+    margin-bottom: 0;
+}
+
+// div.container h4 {
+// }
+
+// div.container {
+//     h4 {
+//         color: blue;
+//     };
+
+//     p {
+//         color: green;
+//     }
+// }
