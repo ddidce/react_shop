@@ -1,5 +1,5 @@
 /* eslint-disable*/
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 // or less ideally
 import { Navbar, Nav, NavDropdown, Jumbotron, Button } from 'react-bootstrap';
 import './App.css';
@@ -7,9 +7,13 @@ import Data from './data';
 
 import {Link, Route, Switch} from 'react-router-dom';
 import Detail from './Detail';
+import axios from 'axios';
+
+export const stockContext = React.createContext();
 
 function App() {
   let [shoes, setShoes] = useState(Data);
+  const [stock, setStock] = useState([10,11,12]);
   return (
     <div className="App">
       <Navbar bg="light" expand="lg" className="">
@@ -18,6 +22,7 @@ function App() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
             <Nav.Link as={Link} to="/"><Link to="/">Home</Link></Nav.Link>
+            
             <Nav.Link as={Link} to="/detail"><Link to="/detail">Detail</Link></Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -44,19 +49,33 @@ function App() {
         </p>
       </Jumbotron>
       <div className="container">
-        <div className="row">
-          {
-            shoes.map((undified, i) => {
-              return <Card shoes={shoes[i]} shoesNum={i} key={i}/>
-            })
-          }
-          {/* <Card shoes={shoes}/> */}
-        </div>
+
+        <stockContext.Provider value={stock}>
+          <div className="row">
+            {
+              shoes.map((undified, i) => {
+                return <Card shoes={shoes[i]} shoesNum={i} key={i}/>
+              })
+            }
+          </div>
+        </stockContext.Provider>
+        <button className="btn btn-primary" onClick={() =>{
+          //1. axios.get(데이터 요청할 url)
+          axios.get('https://codingapple1.github.io/shop/data2.json')
+          //2. 성공하면 .then()
+          .then((result) =>{
+            setShoes([...shoes, ...result.data])
+          })
+          //3. 실패하면 .catch()
+          .catch(() => {
+            console.log('실패했어요');
+          })
+        }}>더보기</button>
       </div>
     </Route>
 
     <Route path="/detail/:id">
-        <Detail shoes={shoes}/>
+        <Detail shoes={shoes} stock={stock} setStock={setStock}/>
     </Route>
 
     <Route path="/:id">
@@ -71,11 +90,15 @@ function App() {
 
 
 const Card = (props) => {
+
+const stock = useContext(stockContext);
+
   return (
     <div className="col-md-4">
       <img src={`https://codingapple1.github.io/shop/shoes${props.shoesNum+1}.jpg`} width="100%" />
       <h4>{props.shoes.title}</h4>
       <p>{props.shoes.content} & {props.shoes.price}</p>
+      {stock[props.shoesNum]}
     </div>
   )
 }

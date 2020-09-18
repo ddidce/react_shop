@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import './Detail.scss';
+import {stockContext} from './App.js';
+import { Nav } from 'react-bootstrap';
 
 const Box = styled.div`
     padding : 20px;
@@ -25,8 +28,12 @@ const Detail = (props) => {
     */
     const [alert, setAlert] = useState(true);
     const [input, setInput] = useState('');
+    const [tab, setTab] = useState(0);
+
+    const stock = useContext(stockContext);
 
     useEffect(() => {
+
         const timer = setTimeout(() => {setAlert(false)}, 2000);
         //디테일 컴포넌트가 사라질때 타이머를 제거해줌
         return () => {clearTimeout(timer)}
@@ -64,14 +71,44 @@ const Detail = (props) => {
                 <h4 className="pt-5">{productContact.title}</h4>
                 <p>{productContact.content}</p>
                 <p>{productContact.price} 원</p>
-                <button className="btn btn-danger">주문하기</button> 
+
+                <Info stock = {props.stock} />
+                <button className="btn btn-danger" onClick={() => {props.setStock([9,11,12])}}>주문하기</button> 
                 <button className="btn btn-danger" onClick={() => {
                     //뒤로가기 goBack사용
                     history.goBack();
                 }}>뒤로가기</button> 
             </div>
         </div>
-    </div> 
+
+        <Nav className="mt-5" variant="tabs" defaultActiveKey="link-0">
+            <Nav.Item>
+                <Nav.Link eventKey="link-0" onClick={()=>{setTab(0)}}>Active</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Nav.Link eventKey="link-1" onClick={()=>{setTab(1)}}>Option 2</Nav.Link>
+            </Nav.Item>
+        </Nav>
+        <TabContent setTab={setTab}/>
+    </div>
+    )
+}
+
+function TabContent(props){
+    if(props.setTab === 0) {
+        return <div>0번째 내용입니다</div>
+    }
+    else if(props.setTab === 1){
+        return <div>1번째 내용입니다.</div>
+    }
+    else if(props.setTab === 2) {
+        return <div>2번쨰 내용입니다.</div>
+    }
+}
+
+function Info(props) {
+    return (
+        <p>재고 : {props.stock[0]}</p>
     )
 }
 
