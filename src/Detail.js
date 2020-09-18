@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import './Detail.scss';
 import {stockContext} from './App.js';
 import { Nav } from 'react-bootstrap';
+import {CSSTransition} from "react-transition-group";
+import './Detail.scss';
 
 const Box = styled.div`
     padding : 20px;
@@ -29,6 +31,7 @@ const Detail = (props) => {
     const [alert, setAlert] = useState(true);
     const [input, setInput] = useState('');
     const [tab, setTab] = useState(0);
+    const [change, setChange] = useState(false);
 
     const stock = useContext(stockContext);
 
@@ -83,25 +86,31 @@ const Detail = (props) => {
 
         <Nav className="mt-5" variant="tabs" defaultActiveKey="link-0">
             <Nav.Item>
-                <Nav.Link eventKey="link-0" onClick={()=>{setTab(0)}}>Active</Nav.Link>
+                <Nav.Link eventKey="link-0" onClick={()=>{setChange(false); setTab(0)}}>Active</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-                <Nav.Link eventKey="link-1" onClick={()=>{setTab(1)}}>Option 2</Nav.Link>
+                <Nav.Link eventKey="link-1" onClick={()=>{setChange(false); setTab(1)}}>Option 2</Nav.Link>
             </Nav.Item>
         </Nav>
-        <TabContent setTab={setTab}/>
+        <CSSTransition in={change} classNames="wow" timeout={500}>
+            <TabContent tab={tab} setChange={setChange}/>
+        </CSSTransition>
     </div>
     )
 }
 
 function TabContent(props){
-    if(props.setTab === 0) {
+
+    useEffect(()=> {
+        props.setChange(true);
+    })
+    if(props.tab === 0) {
         return <div>0번째 내용입니다</div>
     }
-    else if(props.setTab === 1){
+    else if(props.tab === 1){
         return <div>1번째 내용입니다.</div>
     }
-    else if(props.setTab === 2) {
+    else if(props.tab === 2) {
         return <div>2번쨰 내용입니다.</div>
     }
 }
